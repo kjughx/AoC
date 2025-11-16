@@ -41,6 +41,9 @@ static char __buf[__TMP_BUF_LEN] = {0};
 
 #define ARRAY_LEN(x) (sizeof((x)) / (sizeof(*(x))))
 
+#define matches(s1, s2) ((strcmp((s1), (s2)) == 0))
+#define matches_n(s1, s2, n) ((strncmp((s1), (s2), (n)) == 0))
+
 /* End: Useful macros */
 
 /* Start: DYNAMIC ARRAY */
