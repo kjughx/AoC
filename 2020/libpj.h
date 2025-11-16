@@ -236,11 +236,19 @@ typedef struct {
       (sb)->items++;                             \
       (sb)->count--;                             \
     }                                            \
-    while (*(sb)->items && !isalnum(*(sb)->items)) { \
+    while (*(sb)->items && isspace(*(sb)->items)) { \
       (sb)->items++;                                \
       (sb)->count--;                                \
     }                                            \
   } while(0);
+
+static inline char *sb_get_words(String_Builder *sb, int n) {
+  char *tmp = sb->items;
+  while(n--) {
+    sb_skip_word(sb);
+  }
+  return strndup(tmp, sb->items - tmp - 1);
+}
 
 #define sb_appends(sb, ...) __sb_appends((sb), __VA_ARGS__, NULL)
 static inline void __sb_appends(String_Builder *sb, ...) {
