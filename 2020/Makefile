@@ -5,7 +5,7 @@ TARGET := $(shell date -d "$(YEAR)-12-$(DAY) 06:00" +%s)
 SRC := src/day$(DAY).c
 INPUT := inputs/day$(DAY)
 
-CFLAGS= -Wall -Wextra -Wno-unused-function -I./
+CFLAGS= -Wall -Wextra -g -ggdb -Wno-unused-function -I./
 
 all: $(SRC) $(INPUT)
 	gcc $(CFLAGS) $(SRC) -o day$(DAY)
@@ -23,9 +23,9 @@ $(INPUT):
 $(SRC):
 	cp ./template.c $(SRC)
 
-test: $(INPUT)_test
-	gcc $(CFLAGS) $(SRC) -o day$(DAY)
-	./day$(DAY) < $(INPUT)_test
+test: inputs/test
+	gcc -DTEST $(CFLAGS) $(SRC) -o day$(DAY)
+	./day$(DAY) < inputs/test
 
 .PHONY: wait
 wait: $(SRC) $(INPUT)
