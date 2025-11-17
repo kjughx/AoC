@@ -27,6 +27,10 @@ test: inputs/test
 	gcc -DTEST $(CFLAGS) $(SRC) -o day$(DAY)
 	./day$(DAY) < inputs/test
 
+part%: $(SRC) $(INPUT)
+	gcc -DPART$* $(CFLAGS) $(SRC) -o day$(DAY)
+	./day$(DAY) < $(INPUT)
+
 .PHONY: wait
 wait: $(SRC) $(INPUT)
 	@nvim $(SRC) $(INPUT)
