@@ -44,6 +44,13 @@ static char __buf[__TMP_BUF_LEN] = {0};
 #define matches(s1, s2) ((strcmp((s1), (s2)) == 0))
 #define matches_n(s1, s2, n) ((strncmp((s1), (s2), (n)) == 0))
 
+#define swap(x, y) do { \
+  _Static_assert(sizeof(x) == sizeof(y)); \
+  typeof(x) __t = (y);                    \
+  (y) = (x);                              \
+  (x) = __t;                              \
+} while(0);
+
 /* End: Useful macros */
 
 /* Start: DYNAMIC ARRAY */
