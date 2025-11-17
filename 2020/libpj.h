@@ -204,7 +204,7 @@ static inline void *__box(void *x, size_t s) {
 #define ma_mulv(ma, v) TODO()
 
 typedef struct {
-  size_t x, y;
+  ssize_t x, y;
 } Vector2;
 
 typedef struct {
