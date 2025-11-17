@@ -185,7 +185,7 @@ static inline void *__box(void *x, size_t s) {
     memset((ma)->items, val, ma_size((ma)));                                   \
   } while (0);
 
-#define ma_inbounds(ma, x, y) ((0 <= (x) && (x) <= (ma)->nx) && (0 <= (y) && (y) <= (ma)->ny))
+#define ma_inbounds(ma, x, y) ((0 <= (x) && (x) < (typeof((x)))(ma)->nx) && (0 <= (y) && (y) < (typeof((y)))(ma)->ny))
 
 #define v_size(v) ((v)->n * sizeof((v)->items[0]))
 #define v_init(v)                                                              \
