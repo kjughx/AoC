@@ -5,7 +5,7 @@ TARGET := $(shell date -d "$(YEAR)-12-$(DAY) 06:00" +%s)
 SRC := src/day$(DAY).c
 INPUT := inputs/day$(DAY)
 
-CFLAGS= -Wall -Wextra -g -ggdb -Wno-unused-function -I./
+CFLAGS= -Wall -Wextra -g -ggdb -Wno-unused-function -I./ -lm
 
 all: $(SRC) $(INPUT)
 	gcc $(CFLAGS) $(SRC) -o day$(DAY)
