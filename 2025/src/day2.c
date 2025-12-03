@@ -10,7 +10,7 @@
 int main(void) {
   String_Builder sb = {0};
   sb_read_file(&sb, stdin);
-  String_Split lines = sb_split(&sb, '\n');
+  String_Split lines = sb_split(&sb, ',');
 
   u64 ans = 0;
   for (size_t i = 0; i < lines.count; ++i) {
@@ -32,8 +32,8 @@ int main(void) {
       for (size_t k = 1; k < l; ++k) {
         if (l % k != 0) continue;
         char *needle = strndup(ss, k);
-
-        int c = 0;
+ 
+        size_t c = 0;
         for (size_t m = 0; m < l; m += k) {
           if (strncmp(ss + m, needle, k) == 0) c++;
         }
