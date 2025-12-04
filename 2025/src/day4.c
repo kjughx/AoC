@@ -8,25 +8,7 @@
 #endif
 
 int main(void) {
-  String_Builder sb = {0};
-  sb_read_file(&sb, stdin);
-  String_Split lines = sb_split(&sb, '\n');
-
-#ifdef TEST
-#define N 10
-#else
-#define N 138
-#endif
-
-  Grid G = {.nx = N, .ny = N};
-  ma_init(&G);
-  ma_zero(&G);
-
-  for (size_t i = 0; i < lines.count; ++i) {
-    for (size_t j = 0; j < lines.items[i].size; ++j) {
-      *ma_at(&G, i, j) = lines.items[i].buf[j];
-    }
-  }
+  Grid G = grid_read(stdin);
 
 #ifdef PART1
   u64 part1 = 0;

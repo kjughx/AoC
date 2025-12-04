@@ -746,4 +746,23 @@ char *__format(const char *fmt, ...) {
 
 /* Start: Math */
 /* End: Math */
+
+/* Start: Grid */
+#define grid_read(p) _Generic((p), FILE*: __grid_read_fp(p))
+static inline Grid __grid_read_fp(FILE *p) {
+  String_Builder sb = {0};
+  sb_read_file(&sb, p);
+  sb_strip(&sb, '\n');
+  String_Split lines = sb_split(&sb, '\n');
+  Grid G = {.nx = lines.items[0].size, .ny = lines.count};
+  ma_init(&G);
+
+  for (size_t i = 0; i < lines.count; ++i) {
+    for (size_t j = 0; j < lines.items[i].size; ++j) {
+      *ma_at(&G, i, j) = lines.items[i].buf[j];
+    }
+  }
+  return G;
+}
+/* End: Grid */
 #endif // _LIBPJ_H_
