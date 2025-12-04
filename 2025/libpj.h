@@ -64,6 +64,9 @@ static inline void __print_str(char *x) { printf("%s\n", x); }
 
 #define SETBIT(x, n) ((x) |= (1llu << (n)))
 #define CLRBIT(x, n) ((x) &= (~(1llu << (n))))
+#define IS_SET(x, n) ((x) & (1llu << (n)))
+
+#define loop(i) for (size_t __i = 0; __i < (i); ++__i)
 
 /* End: Useful macros */
 
@@ -259,6 +262,10 @@ static inline char *__box_str(void *x, size_t s) {
 typedef struct {
   ssize_t x, y;
 } Vector2;
+
+typedef struct {
+  ssize_t x, y, z;
+} Vector3;
 
 typedef struct {
   float x, y;
@@ -581,7 +588,7 @@ static node_t *dll_tail(node_t *dll) {
 /* End: Linked List */
 /* Start: Hash Table */
 #define MAGIC 5381
-#define TABLE_SIZE 1000000
+#define TABLE_SIZE 500000
 
 struct __node_String2Int {
   char *key;
@@ -728,6 +735,22 @@ static inline void *__ht_get(void *ht, u64 key, size_t key_offset,
   } while (0);
 
 #define ht_contains(ht, k) ((ht)->items[__hash((k)) % TABLE_SIZE] != NULL)
+
+#define ht_clear(ht) do { \
+  for (size_t __i = 0; __i < (ht)->count; ++__i) { \
+    size_t __idx = __hash((ht)->items[__i]) % TABLE_SIZE; \
+    if ((ht)->nodes[__idx]) { \
+      void *n = (void*)(ht)->nodes[__i];        \
+      while (n) {                               \
+        void *next = *(void**)(((size_t)n) + offsetof(typeof(*(ht)->nodes[0]), next)); \
+        free(n);                                                        \
+        n = next;                                                       \
+      }                                         \
+    } \
+    (ht)->nodes[__idx] = NULL;                  \
+    (ht)->count = 0;                            \
+  } \
+} while(0);
 
 /* End: Hash Table */
 
