@@ -78,6 +78,12 @@ typedef int16_t i16;
 typedef uint8_t u8;
 typedef int8_t i8;
 
+typedef struct {
+  char *items;
+  size_t nx;
+  size_t ny;
+} Grid;
+
 /* End: Types */
 
 /* Start: DYNAMIC ARRAY */
@@ -207,7 +213,7 @@ static inline char *__box_str(void *x, size_t s) {
     if (!(ma)->items) {                                                        \
       (ma)->items = malloc(ma_size((ma)));                                     \
     }                                                                          \
-    expect((ma)->items);                                                       \
+    expect((ma)->items != NULL);                                       \
   } while (0);
 
 /* Returns pointer to element */
@@ -227,6 +233,8 @@ static inline char *__box_str(void *x, size_t s) {
     ma_init((ma));                                                             \
     memset((ma)->items, val, ma_size((ma)));                                   \
   } while (0);
+
+#define ma_zero(ma) ma_fill((ma), 0)
 
 #define ma_inbounds(ma, x, y)                                                  \
   ((0 <= (x) && (x) < (typeof((x)))(ma)->nx) &&                                \
