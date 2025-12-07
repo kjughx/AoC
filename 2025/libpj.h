@@ -588,7 +588,7 @@ static node_t *dll_tail(node_t *dll) {
 /* End: Linked List */
 /* Start: Hash Table */
 #define MAGIC 5381
-#define TABLE_SIZE 500000
+#define TABLE_SIZE 50000
 
 struct __node_String2Int {
   char *key;
@@ -602,7 +602,6 @@ typedef struct {
   char **items;
   size_t count;
   size_t capacity;
-
 } String2Int;
 
 struct __node_Int2Int {
@@ -619,6 +618,20 @@ typedef struct {
   size_t capacity;
 
 } Int2Int;
+
+struct __node_Vector22Int {
+  Vector2 *key;
+  u64 *value;
+  struct __node_Vector22Int *next;
+};
+
+typedef struct {
+  struct __node_Vector22Int *nodes[TABLE_SIZE];
+
+  Vector2 **items;
+  size_t count;
+  size_t capacity;
+} Vector22Int;
 
 struct __node_DASet {
   u64 *key;
@@ -664,11 +677,15 @@ size_t __hash_u64(u64 key) {
   }
   return hash;
 }
+size_t __hash_v2(Vector2 key) {
+  return __hash_u64(key.x) + __hash_u64(key.y);
+}
 
-#define __hash(__k) _Generic((__k), char *: __hash_str, u64: __hash_u64)((__k))
+#define __hash(__k) _Generic((__k), char *: __hash_str, u64: __hash_u64, Vector2: __hash_v2)((__k))
 
 #define ht_get(ht, __k) _Generic((__k),                                 \
                                  char *: __ht_get_str,                  \
+                                 Vector2: __ht_get_v2,                  \
                                  default: __ht_get)((ht), (__k), offsetof(typeof(*(ht)->nodes[0]), key), \
                                                     offsetof(typeof(*(ht)), nodes), sizeof(*(ht)->nodes), \
                                                     offsetof(typeof(*(ht)->nodes[0]), value), \
@@ -720,6 +737,29 @@ static inline void *__ht_get(void *ht, u64 key, size_t key_offset,
   return p;
 }
 
+static inline void *__ht_get_v2(void *ht, Vector2 key, size_t key_offset,
+                             size_t nodes_offset, size_t node_size,
+                             size_t value_offset, size_t next_offset) {
+  size_t nodes = (size_t)ht + nodes_offset; // &nodes[0]
+  size_t idx = __hash(key) % TABLE_SIZE;
+  void *node = *(void **)((size_t)nodes + idx * node_size); // nodes[idx] -> struct node*
+  if (node == NULL) return NULL;
+
+  Vector2 *_key = NULL;
+
+  /* Now start searching the linked list, for a node with the same key */
+  while (node != NULL) {
+    _key = *(Vector2 **)((size_t)node + key_offset);
+    if (memcmp(&key, _key, sizeof(key)) == 0) break;
+    node = *(void **)(((size_t)node) + next_offset); // node->next
+  }
+
+  if (node == NULL) return NULL;
+
+  void *p = *(void**)(((size_t)node) + value_offset); // &node->value
+  return p;
+}
+
 #define ht_insert(ht, k, v)                                                    \
   do {                                                                         \
     size_t __i = __hash((k)) % TABLE_SIZE;                                     \
@@ -738,7 +778,7 @@ static inline void *__ht_get(void *ht, u64 key, size_t key_offset,
 
 #define ht_clear(ht) do { \
   for (size_t __i = 0; __i < (ht)->count; ++__i) { \
-    size_t __idx = __hash((ht)->items[__i]) % TABLE_SIZE; \
+    size_t __idx = __hash(*(ht)->items[__i]) % TABLE_SIZE; \
     if ((ht)->nodes[__idx]) { \
       void *n = (void*)(ht)->nodes[__i];        \
       while (n) {                               \
@@ -780,12 +820,21 @@ static inline Grid __grid_read_fp(FILE *p) {
   Grid G = {.nx = lines.items[0].size, .ny = lines.count};
   ma_init(&G);
 
-  for (size_t i = 0; i < lines.count; ++i) {
-    for (size_t j = 0; j < lines.items[i].size; ++j) {
-      *ma_at(&G, i, j) = lines.items[i].buf[j];
+  for (size_t y = 0; y < G.ny; ++y) {
+    for (size_t x = 0; x < G.nx; ++x) {
+      *ma_at(&G, x, y) = lines.items[y].buf[x];
     }
   }
   return G;
+}
+
+static inline void grid_print(Grid *G) {
+  for (size_t y = 0; y < G->ny; ++y) {
+    for (size_t x = 0; x < G->nx; ++x) {
+      printf("%c", *ma_at(G, x, y));
+    }
+    printf("\n");
+  }
 }
 /* End: Grid */
 #endif // _LIBPJ_H_
