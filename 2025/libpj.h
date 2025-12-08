@@ -633,6 +633,20 @@ typedef struct {
   size_t capacity;
 } Vector22Int;
 
+struct __node_Vector32Int {
+  Vector3 *key;
+  u64 *value;
+  struct __node_Vector32Int *next;
+};
+
+typedef struct {
+  struct __node_Vector32Int *nodes[TABLE_SIZE];
+
+  Vector3 **items;
+  size_t count;
+  size_t capacity;
+} Vector32Int;
+
 struct __node_DASet {
   u64 *key;
   struct __node_DASet *next;
@@ -680,12 +694,16 @@ size_t __hash_u64(u64 key) {
 size_t __hash_v2(Vector2 key) {
   return __hash_u64(key.x) + __hash_u64(key.y);
 }
+size_t __hash_v3(Vector3 key) {
+  return __hash_u64(key.x) + __hash_u64(key.y) + __hash_u64(key.z);
+}
 
-#define __hash(__k) _Generic((__k), char *: __hash_str, u64: __hash_u64, Vector2: __hash_v2)((__k))
+#define __hash(__k) _Generic((__k), char *: __hash_str, u64: __hash_u64, Vector2: __hash_v2, Vector3: __hash_v3)((__k))
 
 #define ht_get(ht, __k) _Generic((__k),                                 \
                                  char *: __ht_get_str,                  \
                                  Vector2: __ht_get_v2,                  \
+                                 Vector3: __ht_get_v3,                  \
                                  default: __ht_get)((ht), (__k), offsetof(typeof(*(ht)->nodes[0]), key), \
                                                     offsetof(typeof(*(ht)), nodes), sizeof(*(ht)->nodes), \
                                                     offsetof(typeof(*(ht)->nodes[0]), value), \
@@ -750,6 +768,29 @@ static inline void *__ht_get_v2(void *ht, Vector2 key, size_t key_offset,
   /* Now start searching the linked list, for a node with the same key */
   while (node != NULL) {
     _key = *(Vector2 **)((size_t)node + key_offset);
+    if (memcmp(&key, _key, sizeof(key)) == 0) break;
+    node = *(void **)(((size_t)node) + next_offset); // node->next
+  }
+
+  if (node == NULL) return NULL;
+
+  void *p = *(void**)(((size_t)node) + value_offset); // &node->value
+  return p;
+}
+
+static inline void *__ht_get_v3(void *ht, Vector3 key, size_t key_offset,
+                             size_t nodes_offset, size_t node_size,
+                             size_t value_offset, size_t next_offset) {
+  size_t nodes = (size_t)ht + nodes_offset; // &nodes[0]
+  size_t idx = __hash(key) % TABLE_SIZE;
+  void *node = *(void **)((size_t)nodes + idx * node_size); // nodes[idx] -> struct node*
+  if (node == NULL) return NULL;
+
+  Vector3 *_key = NULL;
+
+  /* Now start searching the linked list, for a node with the same key */
+  while (node != NULL) {
+    _key = *(Vector3 **)((size_t)node + key_offset);
     if (memcmp(&key, _key, sizeof(key)) == 0) break;
     node = *(void **)(((size_t)node) + next_offset); // node->next
   }
