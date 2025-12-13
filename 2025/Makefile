@@ -2,20 +2,14 @@ YEAR=2025
 CURRENT := $(shell date +%s)
 TARGET := $(shell date -d "$(YEAR)-12-$(DAY) 06:00" +%s)
 
-PROG := day$(DAY)
 SRC := src/day$(DAY).c
 INPUT := inputs/day$(DAY)
 
 CFLAGS= -Wall -Wextra -g -ggdb -Wno-unused-function -I./ -lm
 
-all: $(PROG) $(INPUT)
-	./$(PROG) <$(INPUT)
-
-test: $(PROG) inputs/test
+test: $(SRC) inputs/test
+	gcc -DTEST $(CFLAGS) $(SRC) -o day$(DAY)
 	./day$(DAY) < inputs/test
-
-$(PROG): $(SRC)
-	gcc $(CFLAGS) $(SRC) -o day$(DAY)
 
 part%: $(SRC) $(INPUT)
 	gcc -DPART$* $(CFLAGS) $(SRC) -o day$(DAY)
