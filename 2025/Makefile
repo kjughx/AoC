@@ -2,7 +2,7 @@ YEAR=2025
 CURRENT := $(shell date +%s)
 TARGET := $(shell date -d "$(YEAR)-12-$(DAY) 06:00" +%s)
 
-SRC := src/day$(DAY).c
+SRC := src/day$(DAY).c libpj.h
 INPUT := inputs/day$(DAY)
 
 CFLAGS= -Wall -Wextra -g -ggdb -Wno-unused-function -I./ -lm
