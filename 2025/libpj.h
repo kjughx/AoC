@@ -68,6 +68,11 @@ static inline void __print_str(char *x) { printf("%s\n", x); }
 
 #define loop(i) for (size_t __i = 0; __i < (i); ++__i)
 
+#define ABS(x) ((x) > 0 ? (x) : (-(x)))
+#define SIGN(x) ((x) > 0 ? (+1) : (-1))
+
+#define CONTAINS(x1, x2, x3) (MIN((x1), (x2)) <= (x3) && (x3) <= MAX((x1), (x2)))
+
 /* End: Useful macros */
 
 /* Start: Types */
@@ -220,7 +225,7 @@ static inline char *__box_str(void *x, size_t s) {
   } while (0);
 
 /* Returns pointer to element */
-#define ma_at(ma, x, y) ((ma)->items + (ma)->nx * y + x)
+#define ma_at(ma, x, y) ((ma)->items + (ma)->nx * (y) + (x))
 
 #define ma_diag(ma, val)                                                       \
   do {                                                                         \
