@@ -6,6 +6,7 @@ SRC := src/day$(DAY).c libpj.h
 INPUT := inputs/day$(DAY)
 
 CFLAGS= -Wall -Wextra -g -ggdb -Wno-unused-function -I./ -lm
+CFLAGS+=-I/home/philip/oss/lp_solve/ -L/home/philip/oss/lp_solve/lpsolve55/bin/ux64 -l:liblpsolve55.a
 
 test: $(SRC) inputs/test
 	gcc -DTEST $(CFLAGS) $(SRC) -o day$(DAY)
