@@ -6,29 +6,11 @@ typedef struct {
   size_t capacity;
 } Device;
 
-#ifdef TEST
-#define N 10
-#else
 #define N 605
-#endif
 
 Device ds[N] = {0};
 Device dsb[N] = {0};
 String2Int indicies = {0};
-
-size_t fft, dac;
-size_t traverse(size_t s, size_t f) {
-  int c = 0;
-  for (size_t i = 0; i < ds[s].count; ++i) {
-    if (ds[s].items[i] == f) {
-      c++;
-      continue;
-    }
-    c += traverse(ds[s].items[i], f);
-  }
-
-  return c;
-}
 
 typedef struct {
   size_t *items;
@@ -53,7 +35,7 @@ Int2Int can_reach(size_t n) {
   return reachable;
 }
 
-size_t traverse2(size_t s, size_t f){
+size_t traverse(size_t s, size_t f){
   Int2Int reachable = can_reach(f);
   Queue q = {0};
   da_append(&q, s);
@@ -79,7 +61,7 @@ int main(void) {
   sb_read_file(&sb, stdin);
   String_Split lines = sb_split(&sb, '\n');
 
-  size_t you = 0, svr = 0, out = 0;
+  size_t you, fft, dac, out, svr;
   for (size_t i = 0; i < lines.count; ++i) {
     String_Builder line = sv_to_sb(lines.items[i]);
     String_Split words = sb_split(&line, ' ');
@@ -114,5 +96,5 @@ int main(void) {
   }
 
   printf("part1 = %zu\n", traverse(you, out));
-  printf("part2 = %zu\n", traverse2(svr, fft) * traverse2(fft, dac) * traverse2(dac, out));
+  printf("part2 = %zu\n", traverse(svr, fft) * traverse(fft, dac) * traverse(dac, out));
 }
