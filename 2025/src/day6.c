@@ -25,24 +25,29 @@ int main(void) {
     while (*b && (isdigit(*b) || isspace(*b))) {
       if (isdigit(*b)) {
         da_append(&vs, atol(b));
-        while (isdigit(*b)) b++;
+        while (isdigit(*b))
+          b++;
       }
-      while (isspace(*b)) b++;
+      while (isspace(*b))
+        b++;
     }
     while (*b && !isdigit(*b)) {
       if (!isdigit(*b)) {
         da_append(&ops, *b);
         b++;
       }
-      while (isspace(*b)) b++;
+      while (isspace(*b))
+        b++;
     }
   }
   u64 part1 = 0;
   for (size_t i = 0; i < 1000; ++i) {
     u64 res = ops.items[i] == '+' ? 0 : 1;
     for (size_t j = 0; j < 4; ++j) {
-      if (ops.items[i] == '+') res += vs.items[j * 1000 + i];
-      if (ops.items[i] == '*') res *= vs.items[j * 1000 + i];
+      if (ops.items[i] == '+')
+        res += vs.items[j * 1000 + i];
+      if (ops.items[i] == '*')
+        res *= vs.items[j * 1000 + i];
     }
     part1 += res;
   }
@@ -63,14 +68,18 @@ int main(void) {
         value = value * 10 + v;
       }
     }
-    if (value > 0) da_append(&vs, value);
+    if (value > 0)
+      da_append(&vs, value);
 
-    if (lines.items[lines.count - 2].buf[p] == '+' || lines.items[lines.count - 2].buf[p] == '*') {
+    if (lines.items[lines.count - 2].buf[p] == '+' ||
+        lines.items[lines.count - 2].buf[p] == '*') {
       char op = lines.items[lines.count - 2].buf[p];
       u64 res = op == '+' ? 0 : 1;
       for (size_t i = 0; i < vs.count; ++i) {
-        if (op == '+') res += vs.items[i];
-        if (op == '*') res *= vs.items[i];
+        if (op == '+')
+          res += vs.items[i];
+        if (op == '*')
+          res *= vs.items[i];
       }
       part2 += res;
       vs.count = 0;

@@ -14,7 +14,7 @@ int main(void) {
 
   u64 ans = 0;
   for (size_t i = 0; i < lines.count; ++i) {
-    u64 s,e;
+    u64 s, e;
     const char *line = sv_to_cstr(lines.items[i]);
     expect(sscanf(line, "%ld-%ld", &s, &e) == 2);
 
@@ -22,7 +22,8 @@ int main(void) {
       char *ss = strdup(format("%ld", j));
       size_t l = strlen(ss);
 #ifdef PART1
-      if (l % 2 != 0) continue;
+      if (l % 2 != 0)
+        continue;
       if (strncmp(ss, ss + l / 2, l / 2) == 0) {
         ans += j;
       }
@@ -30,12 +31,14 @@ int main(void) {
 
 #ifdef PART2
       for (size_t k = 1; k < l; ++k) {
-        if (l % k != 0) continue;
+        if (l % k != 0)
+          continue;
         char *needle = strndup(ss, k);
- 
+
         size_t c = 0;
         for (size_t m = 0; m < l; m += k) {
-          if (strncmp(ss + m, needle, k) == 0) c++;
+          if (strncmp(ss + m, needle, k) == 0)
+            c++;
         }
 
         if (c == l / k) {
@@ -46,5 +49,5 @@ int main(void) {
 #endif
     }
   }
-    printf("%ld\n", ans);
+  printf("%ld\n", ans);
 }

@@ -31,29 +31,37 @@ l1:
       Vector2 *p = beam.items[i];
       size_t nx = p->x, ny = p->y + 1;
       u64 *pc = ht_get(&beam, *p);
-      if (!ma_inbounds(&G, nx, ny)) continue;
+      if (!ma_inbounds(&G, nx, ny))
+        continue;
       if (*ma_at(&G, nx, ny) != '^') {
         Vector2 np = {.x = p->x, .y = p->y + 1};
         u64 *c = ht_get(&new, np);
-        if (c) (*c) += *pc;
-        else ht_insert(&new, np, *pc);
+        if (c)
+          (*c) += *pc;
+        else
+          ht_insert(&new, np, *pc);
       } else { /* Split */
         part1++;
         if (ma_inbounds(&G, nx + 1, p->y + 1)) {
           Vector2 np = {.x = p->x + 1, .y = p->y + 1};
           u64 *c = ht_get(&new, np);
-          if (c) (*c) += *pc;
-          else ht_insert(&new, np, *pc);
+          if (c)
+            (*c) += *pc;
+          else
+            ht_insert(&new, np, *pc);
         }
         if (ma_inbounds(&G, nx - 1, p->y + 1)) {
           Vector2 np = {.x = p->x - 1, .y = p->y + 1};
           u64 *c = ht_get(&new, np);
-          if (c) (*c) += *pc;
-          else ht_insert(&new, np, *pc);
+          if (c)
+            (*c) += *pc;
+          else
+            ht_insert(&new, np, *pc);
         }
       }
     }
-    if (new.count == 0) break;
+    if (new.count == 0)
+      break;
     swap(beam, new);
   }
 

@@ -1,5 +1,5 @@
-#include <math.h>
 #include "libpj.h"
+#include <math.h>
 
 #ifdef PART1
 #define BANK_LEN 2

@@ -8,12 +8,6 @@
 #error "Define either PART1 or PART2"
 #endif
 
-/* u64 pow(u64 x, int y) { */
-/*   if (y == 0) return 1; */
-
-/*   return (x * pow(x, y - 1)); */
-/* } */
-
 typedef struct {
   Vector3 *items;
   size_t count;
@@ -43,13 +37,15 @@ u64 v3_distance(Vector3 v1, Vector3 v2) {
   return (u64)d;
 }
 
-int sort_distance(const void* a, const void* b) {
+int sort_distance(const void *a, const void *b) {
   const Distance *da = a;
   const Distance *db = b;
 
-  if (da->d < db->d) return -1;
+  if (da->d < db->d)
+    return -1;
 
-  if (da->d == db->d) return 0;
+  if (da->d == db->d)
+    return 0;
 
   return 1;
 }
@@ -70,19 +66,21 @@ void join_circuits(size_t ci, Circuit *a, Circuit *b) {
 u64 count_circuits() {
   u64 res = 0;
   for (size_t i = 0; i < cs.count; ++i) {
-    if(cs.items[i].count) res++;
+    if (cs.items[i].count)
+      res++;
   }
   return res;
 }
 
-int sort_circuits(const void* a, const void* b) {
+int sort_circuits(const void *a, const void *b) {
   const Circuit *ca = a;
   const Circuit *cb = b;
-  if (ca->count < cb->count) return -1;
-  if (ca->count == cb->count) return 0;
+  if (ca->count < cb->count)
+    return -1;
+  if (ca->count == cb->count)
+    return 0;
   return 1;
 }
-
 
 int main(void) {
   String_Builder sb = {0};
@@ -90,21 +88,20 @@ int main(void) {
   char *line;
 
   sb_foreach_line(&sb, line) {
-    u64 x,y,z;
+    u64 x, y, z;
     expect(sscanf(line, "%ld,%ld,%ld", &x, &y, &z) == 3);
     Circuit c = {0};
-    da_append(&c, ((Vector3){x,y,z}));
+    da_append(&c, ((Vector3){x, y, z}));
     da_append(&cs, c);
     ht_insert(&v2i, c.items[0], cs.count - 1);
   }
 
   for (size_t i = 0; i < cs.count; ++i) {
     for (size_t j = 0; i != j && j < cs.count; ++j) {
-      Distance d = {
-        .d = v3_distance(cs.items[i].items[0], cs.items[j].items[0]),
-        .a = cs.items[i].items[0],
-        .b = cs.items[j].items[0]
-      };
+      Distance d = {.d =
+                        v3_distance(cs.items[i].items[0], cs.items[j].items[0]),
+                    .a = cs.items[i].items[0],
+                    .b = cs.items[j].items[0]};
       da_append(&ds, d);
     }
   }
@@ -113,9 +110,10 @@ int main(void) {
 #ifdef PART1
   for (size_t i = 0; i < 1000; ++i) {
     Distance d = ds.items[i];
-    size_t cia = *(size_t*)ht_get(&v2i, d.a);
-    size_t cib = *(size_t*)ht_get(&v2i, d.b);
-    if (cia == cib) continue;
+    size_t cia = *(size_t *)ht_get(&v2i, d.a);
+    size_t cib = *(size_t *)ht_get(&v2i, d.b);
+    if (cia == cib)
+      continue;
     join_circuits(cia, &cs.items[cia], &cs.items[cib]);
   }
   da_sort(&cs, sort_circuits);
@@ -127,11 +125,12 @@ int main(void) {
 #endif
 
 #ifdef PART2
-  for (size_t i = 0; ; ++i) {
+  for (size_t i = 0;; ++i) {
     Distance d = ds.items[i];
-    size_t cia = *(size_t*)ht_get(&v2i, d.a);
-    size_t cib = *(size_t*)ht_get(&v2i, d.b);
-    if (cia == cib) continue;
+    size_t cia = *(size_t *)ht_get(&v2i, d.a);
+    size_t cib = *(size_t *)ht_get(&v2i, d.b);
+    if (cia == cib)
+      continue;
     join_circuits(cia, &cs.items[cia], &cs.items[cib]);
     if (count_circuits() == 1) {
       printf("%ld\n", d.a.x * d.b.x);

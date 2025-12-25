@@ -24,7 +24,8 @@ int main(void) {
         ans++;
         d -= 100;
       }
-      if (dial + d > 100) ans++;
+      if (dial + d > 100)
+        ans++;
 #endif
       dial = (dial + d) % 100;
     }
@@ -39,12 +40,14 @@ int main(void) {
       dial = (dial - d) % 100;
       if (dial < 0) {
 #ifdef PART2
-        if (p) ans++;
+        if (p)
+          ans++;
 #endif
         dial = 100 + dial;
       }
     }
-    if (dial == 0) ans++;
+    if (dial == 0)
+      ans++;
   }
   printf("%d\n", ans);
 }

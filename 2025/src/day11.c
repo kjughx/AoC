@@ -27,7 +27,8 @@ Int2Int can_reach(size_t n) {
     size_t node = da_pop(&q);
     for (size_t i = 0; i < dsb[node].count; ++i) {
       size_t d = dsb[node].items[i];
-      if (ht_get(&reachable, d)) continue;
+      if (ht_get(&reachable, d))
+        continue;
       ht_insert(&reachable, d, 0);
       da_append(&q, d);
     }
@@ -35,7 +36,7 @@ Int2Int can_reach(size_t n) {
   return reachable;
 }
 
-size_t traverse(size_t s, size_t f){
+size_t traverse(size_t s, size_t f) {
   Int2Int reachable = can_reach(f);
   Queue q = {0};
   da_append(&q, s);
@@ -46,7 +47,8 @@ size_t traverse(size_t s, size_t f){
       n++;
       continue;
     }
-    if (!ht_get(&reachable, node)) continue;
+    if (!ht_get(&reachable, node))
+      continue;
 
     for (size_t i = 0; i < ds[node].count; ++i) {
       da_append(&q, ds[node].items[i]);
@@ -73,12 +75,17 @@ int main(void) {
     if (!_idx) {
       ii = indicies.count;
       ht_insert(&indicies, start, indicies.count);
-    } else ii = *_idx;
+    } else
+      ii = *_idx;
 
-    if (strcmp(start, "you") == 0) you = ii;
-    if (strcmp(start, "svr") == 0) svr = ii;
-    if (strcmp(start, "dac") == 0) dac = ii;
-    if (strcmp(start, "fft") == 0) fft = ii;
+    if (strcmp(start, "you") == 0)
+      you = ii;
+    if (strcmp(start, "svr") == 0)
+      svr = ii;
+    if (strcmp(start, "dac") == 0)
+      dac = ii;
+    if (strcmp(start, "fft") == 0)
+      fft = ii;
 
     for (size_t j = 1; j < words.count; ++j) {
       char *device = sv_to_cstr(words.items[j]);
@@ -87,14 +94,17 @@ int main(void) {
       if (!_idx) {
         jj = indicies.count;
         ht_insert(&indicies, device, indicies.count);
-      } else jj = *_idx;
+      } else
+        jj = *_idx;
 
-      if (strcmp(device, "out") == 0) out = jj;
+      if (strcmp(device, "out") == 0)
+        out = jj;
       da_append(&ds[ii], jj);
       da_append(&dsb[jj], ii);
     }
   }
 
   printf("part1 = %zu\n", traverse(you, out));
-  printf("part2 = %zu\n", traverse(svr, fft) * traverse(fft, dac) * traverse(dac, out));
+  printf("part2 = %zu\n",
+         traverse(svr, fft) * traverse(fft, dac) * traverse(dac, out));
 }

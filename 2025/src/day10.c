@@ -30,7 +30,7 @@ typedef struct {
 } Machines;
 
 typedef struct _PQ PQ;
-struct _PQ  {
+struct _PQ {
   size_t s;
   size_t n;
   size_t pressed;
@@ -42,7 +42,8 @@ PQ *pq_insert(PQ **head, size_t s, size_t n) {
   PQ *it = *head;
   PQ *npq = Box(((PQ){.s = s, .n = n, .next = NULL, .prev = NULL}));
 
-  while (n > it->n && it->next) it = it->next;
+  while (n > it->n && it->next)
+    it = it->next;
   if (it->next)
     it->next->prev = npq;
 
@@ -59,8 +60,10 @@ void pq_remove(PQ **head, PQ *pq) {
     *head = pq->next;
   }
 
-  if (pq->next) pq->next->prev = pq->prev;
-  if (pq->prev) pq->prev->next = pq->next;
+  if (pq->next)
+    pq->next->prev = pq->prev;
+  if (pq->prev)
+    pq->prev->next = pq->next;
 }
 
 size_t dfs(Machine *m) {
@@ -69,8 +72,10 @@ size_t dfs(Machine *m) {
 
   for (PQ *it = pq; it; it = it->next) {
     for (size_t i = 0; i < m->s.count; ++i) {
-      if (IS_SET(it->pressed, i)) continue;
-      if (it->n + 1 >= min) continue;
+      if (IS_SET(it->pressed, i))
+        continue;
+      if (it->n + 1 >= min)
+        continue;
       if ((it->s ^ m->s.items[i]) == m->indicator) {
         return it->n + 1;
       }
@@ -122,16 +127,19 @@ int main(void) {
 
     line.items[line.count - 2] = '\0';
     for (size_t j = 1; j < sp.items[0].size - 1; ++j) {
-      if (sp.items[0].buf[j] == '#') SETBIT(ind, j-  1);
+      if (sp.items[0].buf[j] == '#')
+        SETBIT(ind, j - 1);
     }
     m.indicator = ind;
     size_t j;
     for (j = 1; j < sp.count - 1; ++j) {
-      if (sp.items[j].buf[0] == '{') break;
+      if (sp.items[j].buf[0] == '{')
+        break;
       size_t s = 0;
       Button b = {0};
       for (size_t k = 1; k < sp.items[j].size - 1; ++k) {
-        if (sp.items[j].buf[k] == ',') continue;
+        if (sp.items[j].buf[k] == ',')
+          continue;
         SETBIT(s, sp.items[j].buf[k] - '0');
         da_append(&b, sp.items[j].buf[k] - '0');
       }
@@ -149,43 +157,43 @@ int main(void) {
 #endif
 
 #ifdef PART2
-  lprec *lp;
-  lp = make_lp(0, bs.count);
-  set_verbose(lp, 0);
-  expect(lp != NULL);
+    lprec *lp;
+    lp = make_lp(0, bs.count);
+    set_verbose(lp, 0);
+    expect(lp != NULL);
 
-  double *objective = malloc(sizeof(double) * (bs.count + 1));
-  objective[0] = 0;
-  for (size_t e = 1; e < bs.count + 1; ++e) {
-    objective[e] = 1;
-  }
-  set_obj_fn(lp, objective);
-  set_minim(lp);
+    double *objective = malloc(sizeof(double) * (bs.count + 1));
+    objective[0] = 0;
+    for (size_t e = 1; e < bs.count + 1; ++e) {
+      objective[e] = 1;
+    }
+    set_obj_fn(lp, objective);
+    set_minim(lp);
 
-  for (size_t e = 0; e < cs.count; ++e) {
-    double *cfs = malloc(sizeof(double) * (bs.count + 1));
-    memset(cfs, 0, sizeof(double) * (bs.count + 1));
-    for (size_t k = 0; k < bs.count; ++k) {
-      for (size_t l = 0; l < bs.items[k].count; ++l) {
-        if (bs.items[k].items[l] == e) {
-          cfs[k + 1] = 1;
-          break;
+    for (size_t e = 0; e < cs.count; ++e) {
+      double *cfs = malloc(sizeof(double) * (bs.count + 1));
+      memset(cfs, 0, sizeof(double) * (bs.count + 1));
+      for (size_t k = 0; k < bs.count; ++k) {
+        for (size_t l = 0; l < bs.items[k].count; ++l) {
+          if (bs.items[k].items[l] == e) {
+            cfs[k + 1] = 1;
+            break;
+          }
         }
       }
+      add_constraint(lp, cfs, EQ, cs.items[e]);
+      set_int(lp, e + 1, TRUE);
+      set_lowbo(lp, e + 1, 0);
     }
-    add_constraint(lp, cfs, EQ, cs.items[e]);
-    set_int(lp, e + 1, TRUE);
-    set_lowbo(lp, e + 1, 0);
-  }
 
-  print_lp(lp);
-  expect(solve(lp) == 0);
+    print_lp(lp);
+    expect(solve(lp) == 0);
 
-  double *solution = malloc(sizeof(double) * bs.count);
-  get_variables(lp, solution);
-  for (size_t k = 0; k < bs.count; ++k) {
-    part2 += solution[k];
-  }
+    double *solution = malloc(sizeof(double) * bs.count);
+    get_variables(lp, solution);
+    for (size_t k = 0; k < bs.count; ++k) {
+      part2 += solution[k];
+    }
 #endif
   }
   printf("part1 = %lu\n", part1);

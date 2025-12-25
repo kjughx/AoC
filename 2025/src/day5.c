@@ -10,12 +10,15 @@ typedef struct {
   size_t capacity;
 } Ranges;
 
-int sort_range(const void *a, const void*b) {
+int sort_range(const void *a, const void *b) {
   const Range *ra = a;
   const Range *rb = b;
-  if (ra->min == rb->min && ra->max == rb->max) return 0;
-  if (ra->min < rb->min) return -1;
-  if (ra->min <= rb->min && ra->max <= rb->max) return -1;
+  if (ra->min == rb->min && ra->max == rb->max)
+    return 0;
+  if (ra->min < rb->min)
+    return -1;
+  if (ra->min <= rb->min && ra->max <= rb->max)
+    return -1;
   return 1;
 }
 
@@ -29,7 +32,8 @@ int main(void) {
   for (i = 0; i < lines.count; ++i) {
     String_View line = lines.items[i];
     u64 m1, m2;
-    if (line.size == 0) break;
+    if (line.size == 0)
+      break;
     expect(sscanf(sv_to_cstr(line), "%ld-%ld", &m1, &m2) == 2);
     da_append(&ranges, ((Range){.min = m1, .max = m2}));
   }
@@ -60,9 +64,11 @@ int main(void) {
 
   Range current = ranges.items[0];
   for (size_t i = 1; i < ranges.count; ++i) {
-    if (current.max >= ranges.items[i].min && current.max <= ranges.items[i].max) {
+    if (current.max >= ranges.items[i].min &&
+        current.max <= ranges.items[i].max) {
       current.max = ranges.items[i].max;
-    } else if (current.min <= ranges.items[i].min && current.max >= ranges.items[i].max) {
+    } else if (current.min <= ranges.items[i].min &&
+               current.max >= ranges.items[i].max) {
       continue;
     } else {
       da_append(&final, current);

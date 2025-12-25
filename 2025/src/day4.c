@@ -14,7 +14,8 @@ int main(void) {
   u64 part1 = 0;
   for (size_t y = 0; y < G.ny; ++y) {
     for (size_t x = 0; x < G.nx; ++x) {
-      if (*ma_at(&G, x, y) != '@') continue;
+      if (*ma_at(&G, x, y) != '@')
+        continue;
       int n = 0;
       for (ssize_t dx = -1; dx <= 1; ++dx) {
         for (ssize_t dy = -1; dy <= 1; ++dy) {
@@ -27,7 +28,8 @@ int main(void) {
           n += (*ma_at(&G, nx, ny) == '.');
         }
       }
-      if (n > 4) part1++;
+      if (n > 4)
+        part1++;
     }
   }
   printf("%ld\n", part1);
@@ -43,7 +45,8 @@ int main(void) {
     removed = false;
     for (size_t y = 0; y < G.ny; ++y) {
       for (size_t x = 0; x < G.nx; ++x) {
-        if (*ma_at(&G, x, y) != '@') continue;
+        if (*ma_at(&G, x, y) != '@')
+          continue;
         int n = 0;
         for (ssize_t dx = -1; dx <= 1; ++dx) {
           for (ssize_t dy = -1; dy <= 1; ++dy) {
@@ -56,14 +59,15 @@ int main(void) {
             n += (*ma_at(&G, nx, ny) == '.');
           }
         }
-        if (n > 4)  {
+        if (n > 4) {
           removed = true;
           part2++;
-        } else *ma_at(&Gnew, x, y) = *ma_at(&G, x, y);
+        } else
+          *ma_at(&Gnew, x, y) = *ma_at(&G, x, y);
       }
     }
     swap(Gnew.items, G.items);
-  } while(removed);
+  } while (removed);
 
   printf("%ld\n", part2);
 #endif
